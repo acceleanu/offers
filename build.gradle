@@ -40,4 +40,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'io.rest-assured:rest-assured:3.1.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test:2.0.1.RELEASE'
+    testCompile 'com.github.alexheretic:fluent:2.0'
 }
