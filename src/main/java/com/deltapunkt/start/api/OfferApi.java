@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -41,11 +42,16 @@ public class OfferApi {
         produces = "application/json"
     )
     @ResponseBody
-    ResponseEntity<Offer> getOffer(@PathVariable("id") String id) {
+    ResponseEntity getOffer(@PathVariable("id") String id) {
         return repository.getOffer(id).map(offer ->
-            new ResponseEntity<>(offer, HttpStatus.OK)
-        ).orElse(
-            new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        {
+            if(offer.hasExpired()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(offer, HttpStatus.OK);
+            }
+        }).orElse(
+            new ResponseEntity(HttpStatus.NOT_FOUND)
         );
     }
 }

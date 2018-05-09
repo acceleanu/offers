@@ -1,11 +1,18 @@
 package com.deltapunkt.start.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.Instant;
+
 public class Offer {
     private String id;
     private long price;
     private String currency;
     private String description;
     private long duration;
+
+    @JsonIgnore
+    private long creationTime = getCurrentTimeInSeconds();
 
     public Offer() {
     }
@@ -39,8 +46,8 @@ public class Offer {
         return duration;
     }
 
-    public static Offer createOffer(String newId, Offer offer) {
-        return new Offer(newId, offer.getPrice(), offer.getCurrency(), offer.getDescription(), offer.getDuration());
+    public static Offer createOffer(String id, Offer offer) {
+        return new Offer(id, offer.getPrice(), offer.getCurrency(), offer.getDescription(), offer.getDuration());
     }
 
     public static Offer createOffer(String id, long price, String currency, String description, long duration) {
@@ -49,5 +56,14 @@ public class Offer {
 
     public static Offer createOffer(long price, String currency, String description, long duration) {
         return createOffer(null, price, currency, description, duration);
+    }
+
+    public boolean hasExpired() {
+        long now = getCurrentTimeInSeconds();
+        return now > creationTime + duration;
+    }
+
+    private long getCurrentTimeInSeconds() {
+        return Instant.now().getEpochSecond();
     }
 }
