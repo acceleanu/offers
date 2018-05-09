@@ -14,6 +14,7 @@ import javax.websocket.server.PathParam;
 import java.time.Instant;
 import java.util.Optional;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -47,8 +48,32 @@ public class OfferApi {
         {
             if(offer.hasExpired()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
-            } else {
+            } else
+                if(offer.isCancelled()) {
+                    return new ResponseEntity(HttpStatus.NOT_FOUND);
+                }
+            else {
                 return new ResponseEntity<>(offer, HttpStatus.OK);
+            }
+        }).orElse(
+            new ResponseEntity(HttpStatus.NOT_FOUND)
+        );
+    }
+
+    @RequestMapping(
+        method = DELETE,
+        path="{id}",
+        produces = "application/json"
+    )
+    @ResponseBody
+    ResponseEntity cancelOffer(@PathVariable("id") String id) {
+        return repository.getOffer(id).map(offer ->
+        {
+            if(offer.hasExpired()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            } else {
+                offer.cancel();
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         }).orElse(
             new ResponseEntity(HttpStatus.NOT_FOUND)

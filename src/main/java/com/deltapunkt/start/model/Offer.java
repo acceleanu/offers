@@ -10,9 +10,11 @@ public class Offer {
     private String currency;
     private String description;
     private long duration;
-
     @JsonIgnore
     private long creationTime = getCurrentTimeInSeconds();
+
+    @JsonIgnore
+    private boolean cancelled;
 
     public Offer() {
     }
@@ -61,6 +63,14 @@ public class Offer {
     public boolean hasExpired() {
         long now = getCurrentTimeInSeconds();
         return now > creationTime + duration;
+    }
+
+    public void cancel() {
+        cancelled = true;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     private long getCurrentTimeInSeconds() {

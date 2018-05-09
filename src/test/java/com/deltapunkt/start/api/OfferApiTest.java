@@ -16,6 +16,7 @@ import static io.restassured.http.ContentType.JSON;
 import static java.lang.String.format;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -82,6 +83,34 @@ public class OfferApiTest {
     public void offerExpiresAfterOneSecond() {
         String id = createOffer(ONE_SECOND);
         unchecked(() -> Thread.sleep(2000));
+        given()
+            .port(port)
+        .when()
+            .get(format("/offer/%s", id))
+        .then()
+            .assertThat()
+                .statusCode(SC_NOT_FOUND);
+    }
+
+    @Test
+    public void cancelledOfferIsNoLongerAvailable() {
+        String id = createOffer(ONE_HOUR);
+        given()
+            .port(port)
+        .when()
+            .get(format("/offer/%s", id))
+        .then()
+            .assertThat()
+                .statusCode(SC_OK);
+
+        given()
+            .port(port)
+        .when()
+            .delete(format("/offer/%s", id))
+        .then()
+            .assertThat()
+                .statusCode(SC_NO_CONTENT);
+
         given()
             .port(port)
         .when()
