@@ -1,4 +1,4 @@
-package com.deltapunkt.start;
+package com.deltapunkt.start.api;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
