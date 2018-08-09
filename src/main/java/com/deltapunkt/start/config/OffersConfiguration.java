@@ -1,4 +1,4 @@
-package com.deltapunkt.start;
+package com.deltapunkt.start.config;
 
 import com.deltapunkt.start.repo.OffersRepository;
 import org.springframework.context.annotation.Bean;

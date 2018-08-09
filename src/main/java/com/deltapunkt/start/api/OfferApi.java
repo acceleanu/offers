@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
-import java.time.Instant;
-import java.util.Optional;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(path = "/offer")
+@RequestMapping(
+    path = "/offer",
+    produces = "application/json"
+)
 public class OfferApi {
     private final OffersRepository repository;
 
@@ -29,8 +28,7 @@ public class OfferApi {
 
     @RequestMapping(
         method = POST,
-        consumes = "application/json",
-        produces = "application/json"
+        consumes = "application/json"
     )
     @ResponseBody
     ResponseEntity<Offer> newOffer(@RequestBody Offer offer) {
@@ -39,8 +37,7 @@ public class OfferApi {
 
     @RequestMapping(
         method = GET,
-        path="{id}",
-        produces = "application/json"
+        path="{id}"
     )
     @ResponseBody
     ResponseEntity getOffer(@PathVariable("id") String id) {
@@ -62,8 +59,7 @@ public class OfferApi {
 
     @RequestMapping(
         method = DELETE,
-        path="{id}",
-        produces = "application/json"
+        path="{id}"
     )
     @ResponseBody
     ResponseEntity cancelOffer(@PathVariable("id") String id) {
