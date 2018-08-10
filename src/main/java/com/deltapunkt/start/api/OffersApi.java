@@ -16,13 +16,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping(
-    path = "/offer",
+    path = "/offers",
     produces = "application/json"
 )
-public class OfferApi {
+public class OffersApi {
     private final OffersRepository repository;
 
-    public OfferApi(OffersRepository repository) {
+    public OffersApi(OffersRepository repository) {
         this.repository = repository;
     }
 

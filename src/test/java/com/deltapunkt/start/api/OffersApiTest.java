@@ -13,7 +13,6 @@ import static com.deltapunkt.start.util.Util.fluentMap;
 import static com.deltapunkt.start.util.Util.toJson;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
-import static java.lang.String.format;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
@@ -25,12 +24,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class OfferApiTest {
-    public static final String GBP = "GBP";
-    public static final String PRODUCT_DESCRIPTION = "This is a great product offer";
-    public static final int PRODUCT_PRICE_x100 = 10050;
-    public static final int ONE_HOUR = (int)Duration.ofHours(1).getSeconds();
-    public static final int ONE_SECOND = 1;
+public class OffersApiTest {
+    static final String GBP = "GBP";
+    static final String PRODUCT_DESCRIPTION = "This is a great product offer";
+    static final int PRODUCT_PRICE_x100 = 10050;
+    static final int ONE_HOUR = (int)Duration.ofHours(1).getSeconds();
+    static final int ONE_SECOND = 1;
 
     @LocalServerPort
     int port;
@@ -42,7 +41,7 @@ public class OfferApiTest {
             .contentType(JSON)
             .body(createPayload(ONE_HOUR))
         .when()
-            .post("/offer")
+            .post("/offers")
         .then()
             .assertThat()
                 .statusCode(SC_CREATED)
@@ -68,7 +67,7 @@ public class OfferApiTest {
         given()
             .port(port)
         .when()
-            .get(format("/offer/%s", id))
+            .get("/offers/{id}", id)
         .then()
             .assertThat()
                 .statusCode(SC_OK)
@@ -86,7 +85,7 @@ public class OfferApiTest {
         given()
             .port(port)
         .when()
-            .get(format("/offer/%s", id))
+            .get("/offers/{id}", id)
         .then()
             .assertThat()
                 .statusCode(SC_NOT_FOUND);
@@ -98,7 +97,7 @@ public class OfferApiTest {
         given()
             .port(port)
         .when()
-            .get(format("/offer/%s", id))
+            .get("/offers/{id}", id)
         .then()
             .assertThat()
                 .statusCode(SC_OK);
@@ -106,7 +105,7 @@ public class OfferApiTest {
         given()
             .port(port)
         .when()
-            .delete(format("/offer/%s", id))
+            .delete("/offers/{id}", id)
         .then()
             .assertThat()
                 .statusCode(SC_NO_CONTENT);
@@ -114,7 +113,7 @@ public class OfferApiTest {
         given()
             .port(port)
         .when()
-            .get(format("/offer/%s", id))
+            .get("/offers/{id}", id)
         .then()
             .assertThat()
                 .statusCode(SC_NOT_FOUND);
@@ -126,7 +125,7 @@ public class OfferApiTest {
             .contentType(JSON)
             .body(createPayload(duration))
         .when()
-            .post("/offer")
+            .post("/offers")
         .then()
             .assertThat()
                 .statusCode(SC_CREATED)
