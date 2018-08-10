@@ -2,14 +2,19 @@ package com.deltapunkt.start.api;
 
 import com.deltapunkt.start.model.Offer;
 import com.deltapunkt.start.repo.OffersRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -31,8 +36,21 @@ public class OffersApi {
         consumes = "application/json"
     )
     @ResponseBody
-    ResponseEntity<Offer> newOffer(@RequestBody Offer offer) {
-        return new ResponseEntity<>(repository.addOffer(offer), HttpStatus.CREATED);
+    ResponseEntity newOffer(@RequestBody Offer offer) {
+        Offer createdOffer = repository.addOffer(offer);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(createdOffer.getId()).toUri();
+
+        return ResponseEntity.created(location).body(createdOffer);
+    }
+
+    @RequestMapping(
+        method = GET
+    )
+    @ResponseBody
+    ResponseEntity getOffers() {
+        return ok(repository.getOffers());
     }
 
     @RequestMapping(
@@ -44,16 +62,16 @@ public class OffersApi {
         return repository.getOffer(id).map(offer ->
         {
             if(offer.hasExpired()) {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return notFound().build();
             } else
                 if(offer.isCancelled()) {
-                    return new ResponseEntity(HttpStatus.NOT_FOUND);
+                    return notFound().build();
                 }
             else {
-                return new ResponseEntity<>(offer, HttpStatus.OK);
+                return ok(offer);
             }
-        }).orElse(
-            new ResponseEntity(HttpStatus.NOT_FOUND)
+        }).orElseGet(
+            () -> notFound().build()
         );
     }
 
@@ -66,13 +84,13 @@ public class OffersApi {
         return repository.getOffer(id).map(offer ->
         {
             if(offer.hasExpired()) {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return notFound().build();
             } else {
                 offer.cancel();
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return noContent().build();
             }
-        }).orElse(
-            new ResponseEntity(HttpStatus.NOT_FOUND)
+        }).orElseGet(
+            () -> notFound().build()
         );
     }
 }

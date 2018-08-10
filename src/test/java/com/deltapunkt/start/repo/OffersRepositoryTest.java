@@ -1,13 +1,13 @@
 package com.deltapunkt.start.repo;
 
 import com.deltapunkt.start.model.Offer;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 
 import static com.deltapunkt.start.model.Offer.createOffer;
+import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OffersRepositoryTest {
@@ -53,7 +53,15 @@ public class OffersRepositoryTest {
     }
 
     @Test
+    public void getOffersFromTheRepository() {
+        Offer offer1 = repository.addOffer(OFFER1);
+        Offer offer2 = repository.addOffer(OFFER1);
+        assertThat(repository.getOffers())
+                .containsExactlyInAnyOrder(offer1, offer2);
+    }
+
+    @Test
     public void getOfferThatDoesNotExistInTheRepository() {
-        assertThat(repository.getOffer(RandomStringUtils.random(10))).isEmpty();
+        assertThat(repository.getOffer(random(10))).isEmpty();
     }
 }

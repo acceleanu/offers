@@ -2,6 +2,8 @@ package com.deltapunkt.start.repo;
 
 import com.deltapunkt.start.model.Offer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,5 +35,9 @@ public class OffersRepository {
 
     private String getNewId() {
         return format("%d", sequence.getAndIncrement());
+    }
+
+    public List<Offer> getOffers() {
+        return new ArrayList<>(offers.values());
     }
 }
